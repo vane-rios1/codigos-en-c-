@@ -1,0 +1,34 @@
+numero = int(input("Ingrese un numero entero:"))
+if numero % 2 == 0:
+   print("El numero es par.")
+else:
+    print("El numero es impar.")
+cantidad = int(input("¿Cuantos numeros pares deseas ver?:"))
+contador = 0
+i = 1
+while contador < cantidad:
+   if i % 2 == 0:
+       print("Par numero" + str(contador + 1) + ":", i)
+       contador += 1
+   i += 1 
+
+
+
+Descripción de errores:
+
+1. Error de sintaxis en if numero % 2 = 0:
+	•	El signo de comparación correcto en Python es ==, no =, que se usa para asignación.
+	•	Corrección: if numero % 2 == 0:
+
+2. Error de sintaxis en while contador < cantidad:
+	•	Faltaba el signo : al final de la línea para indicar el inicio del bloque while.
+	•	Corrección: while contador < cantidad:
+
+3. Error de tipo al concatenar con contador:
+	•	No se puede concatenar directamente un número (contador) con una cadena de texto usando +.
+	•	Se debe convertir el número a cadena con str(contador + 1) (añadí +1 para empezar desde 1).
+	•	Corrección: print("Par número " + str(contador + 1) + ":", i)
+
+4. Error de tipo en numero = input(...):
+	•	La función input() devuelve una cadena (str), pero para operar con % se necesita un entero.
+	•	Corrección: numero = int(input(...))
