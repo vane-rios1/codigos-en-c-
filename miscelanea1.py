@@ -3,14 +3,15 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
+# Lista para almacenar el historial de alumnos
+historial_alumnos = []
+
 def mostrar_mensaje_bienvenida():
-    # Muestra un mensaje de bienvenida en el área dinámica.
     limpiar_area_dinamica()
     tk.Label(area_dinamica, text="¡Bienvenido, Vanessa Rios! ", font=("Arial", 14)).pack(pady=10)
-    tk.Button(area_dinamica, text="Mostrar Mensaje", command=lambda: messagebox.showinfo("Bienvenida", "Hola, vanessa!!")).pack()
+    tk.Button(area_dinamica, text="Mostrar Mensaje", command=lambda: messagebox.showinfo("Bienvenida", "Hola, Vanessa!!")).pack()
 
 def mostrar_datos_alumno():
-    # Muestra una interfaz para ingresar datos del alumno.
     limpiar_area_dinamica()
     tk.Label(area_dinamica, text="Información del Alumno", font=("Arial", 14)).pack(pady=10)
 
@@ -18,13 +19,13 @@ def mostrar_datos_alumno():
     nombre_alumno = tk.Entry(area_dinamica)
     nombre_alumno.pack(pady=5)
 
-    tk.Label(area_dinamica, text="Selección:").pack()
-    opcion_elegida = tk.StringVar(value="Opción 1")
-    tk.Radiobutton(area_dinamica, text="Opción 1", variable=opcion_elegida, value="Opción 1").pack()
-    tk.Radiobutton(area_dinamica, text="Opción 2", variable=opcion_elegida, value="Opción 2").pack()
+    tk.Label(area_dinamica, text="Selección de género:").pack()
+    opcion_elegida = tk.StringVar(value="Masculino")
+    tk.Radiobutton(area_dinamica, text="Masculino", variable=opcion_elegida, value="Masculino").pack()
+    tk.Radiobutton(area_dinamica, text="Femenino", variable=opcion_elegida, value="Femenino").pack()
 
-    tk.Label(area_dinamica, text="Lista desplegable:").pack()
-    combo = ttk.Combobox(area_dinamica, values=["Uno", "Dos", "Tres"])
+    tk.Label(area_dinamica, text="Calificación:").pack()
+    combo = ttk.Combobox(area_dinamica, values=["Diez", "Nueve", "Ocho"])
     combo.pack()
     combo.current(0)
 
@@ -33,15 +34,33 @@ def mostrar_datos_alumno():
             nombre = nombre_alumno.get()
             if not nombre:
                 raise ValueError("El campo de nombre no puede estar vacío.")
-            messagebox.showinfo("Revisión", f"Nombre: {nombre}\nSelección: {opcion_elegida.get()}\nLista: {combo.get()}")
+            
+            # Guardar los datos en la lista historial
+            datos = {
+                "Nombre": nombre,
+                "Género": opcion_elegida.get(),
+                "Calificación": combo.get()
+            }
+            historial_alumnos.append(datos)
+
+            messagebox.showinfo("Revisión", f"Nombre: {nombre}\nGénero: {datos['Género']}\nCalificación: {datos['Calificación']}")
         except ValueError as e:
             messagebox.showerror("Error", str(e))
 
     tk.Button(area_dinamica, text="Guardar Datos", command=guardar_datos).pack(pady=10)
 
+def mostrar_historial_alumnos():
+    limpiar_area_dinamica()
+    tk.Label(area_dinamica, text="Historial de Alumnos", font=("Arial", 14)).pack(pady=10)
+
+    if not historial_alumnos:
+        tk.Label(area_dinamica, text="No hay datos almacenados.").pack(pady=10)
+    else:
+        for i, alumno in enumerate(historial_alumnos, start=1):
+            info = f"{i}. Nombre: {alumno['Nombre']}, Género: {alumno['Género']}, Calificación: {alumno['Calificación']}"
+            tk.Label(area_dinamica, text=info, anchor="w", justify="left").pack(fill="x", padx=10)
 
 def cambiar_tema():
-    # Permite al usuario cambiar el tema de color de la interfaz.
     limpiar_area_dinamica()
     tk.Label(area_dinamica, text="Cambiar Tema", font=("Arial", 14)).pack(pady=10)
 
@@ -58,27 +77,21 @@ def cambiar_tema():
     for color in colores:
         tk.Button(area_dinamica, text=color, bg=color, width=20, command=lambda col=color: aplicar_color(col)).pack(pady=2)
 
-
 def mostrar_ayuda():
-    # Muestra una sección de ayuda para el usuario.
     limpiar_area_dinamica()
-    tk.Label(area_dinamica, text="Ayuda", font=("Arial", 14)).pack(pady=10)
+    tk.Label(area_dinamica, text="Preguntas", font=("Arial", 14)).pack(pady=10)
     contenido = (
-        "Instrucciones:\n\n"
-        "- Botón 'Mostrar Mensaje': Muestra un mensaje de bienvenida.\n"
-        "- Botón 'Guardar Datos': Guarda el nombre del alumno, una selección y una opción de una lista desplegable.\n"
-        "- Sección 'Cambiar Tema': Permite cambiar el color de fondo de la aplicación.\n"
-        "- Para cambiar un texto, edita directamente el texto en el código fuente.\n"
-        "- Para cambiar un color, usa la sección 'Cambiar Tema'."
+        "Explica con tus palabras:\n\n"
+        "- ¿Qué hace cada botón?\n"
+        "- ¿Qué cambias si modificas un texto?\n"
+        "- ¿Cómo cambias un color?\n"
+        "- ¿Qué debes renombrar?"
     )
     tk.Label(area_dinamica, text=contenido, justify="left").pack(pady=10)
 
-
 def limpiar_area_dinamica():
-     # Limpia el área dinámica para mostrar una nueva interfaz.
     for widget in area_dinamica.winfo_children():
         widget.destroy()
-
 
 # Creación de la ventana principal
 ventana_principal = tk.Tk()
@@ -94,10 +107,10 @@ menu_lateral.pack(side="left", fill="y")
 area_dinamica = tk.Frame(ventana_principal, bg="white")
 area_dinamica.pack(side="right", expand=True, fill="both")
 
-
 # Botones del menú lateral
 tk.Button(menu_lateral, text="Inicio", command=mostrar_mensaje_bienvenida, width=15).pack(pady=10)
 tk.Button(menu_lateral, text="Datos Alumno", command=mostrar_datos_alumno, width=15).pack(pady=10)
+tk.Button(menu_lateral, text="Historial Alumnos", command=mostrar_historial_alumnos, width=15).pack(pady=10)
 tk.Button(menu_lateral, text="Cambiar Tema", command=cambiar_tema, width=15).pack(pady=10)
 tk.Button(menu_lateral, text="Ayuda", command=mostrar_ayuda, width=15).pack(pady=10)
 tk.Button(menu_lateral, text="Salir", command=ventana_principal.destroy, width=15).pack(pady=30)
